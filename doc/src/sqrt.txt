@@ -1,0 +1,55 @@
+# algorytm:
+#
+# c - pierwiastkowana liczba > 0
+#
+# tworzymy dwa ci±gi a i b
+#
+# a0 = dowolna liczba - mo¿e byæ c
+# b0 = c/a0
+#
+# a1 = (a0+b0)/2
+# b1 = c/a1
+# ...
+# an = (an-1 + bn-1)/2
+# bn = c/an
+#
+#
+# b < c^(1/2) < a
+# mo¿na wykazaæ, ¿e ci±gi a,b sa zbie¿ne do c^(1/2)
+#
+# proponowane wyra¿enie watch
+# c=4 an=2 bn=3
+
+	read  4         # r4 = c
+
+	load  4
+	jzero write2    # sqrt(0) = 0
+
+	jgtz  ok
+	jump  error     # c < 0 - b³±d!
+
+ok:	store 2         # r2 = a
+	                # r3 = b
+
+loop:	load  2         #
+	add   3         #
+	div  =2         #
+	store 2         # an=r2 = (an-1+bn-1)/2
+
+	load  4         #
+	div   2         #
+	store 3         # bn=r3 = c/an
+
+	# je¶li b>=a (b>a lub b=a)
+
+	sub   2         # r0 = a-b
+	jzero write1
+	jgtz  write1
+	jump  loop
+
+write1:	write 2         # wypisz an (an=floor(sqrt(c)))
+	write 3         # wypisz bn (bn=round(sqrt(c)))
+	halt
+
+write2:	write =0
+error:	halt

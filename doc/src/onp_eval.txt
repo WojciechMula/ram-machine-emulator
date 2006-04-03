@@ -1,0 +1,92 @@
+# Kodowanie symboli specjalnych jest nastêpuj±ce:
+# zero            = 0, 0
+# koniec ³añcucha = 0, 1
+# +               = 0, 2
+# -               = 0, 3
+# *               = 0, 4
+# /               = 0, 5
+#
+# np.
+# notacja infiksowa:	(((8+9)*5)-8/2)*(1+2) = 243
+#               ONP:	8 9  +  5  *  8 2, /   -  1 2  +   *  eol
+#    po zakodowaniu:	8 9 0 2 5 0 4 8 2 0 5 0 3 1 2 0 2 0 4 0 1
+#
+# proponowane wyra¿enie watch:
+# x=3 y=5 arg_a=2 arg_b=3 top=4 stack=10:15
+
+	load   =10      # r4 - wska¼nik stosu (top[stack])
+	store   4       # stos zaczyna siê od rejestru 10-tego
+
+next:	read    3       # wczytaj x (r3)
+	load    3
+	jzero   escape  # znak specjalny
+	jump    pushnum # liczba
+
+escape:	read    0       # wczytaj y
+	jzero   pushnum # x,y = 0,0 -> warto¶æ zero
+
+	sub    =1       # (y-1) == 0 -> x,y = 0,1 -> koniec ³añcucha
+	jzero   eol     #
+
+	store  5        # r5 = y
+
+	# ¶ci±gamy ze stosu dwie liczby
+
+	load   4
+	sub   =10       # "usuñ" offset
+	sub   =1        # gdy ilo¶æ el. na stosie wynosi zero to r0=-1
+	                # gdy jest jeden el. to r0=0
+	jgtz  pop2
+	jump  error     # stos zawiera 0 albo 1 element - b³±d!
+
+pop2: 	load   4        # za³aduj wska¼nik stosu
+	sub   =1        #
+	load   *0       #
+	store  2        # r2 = wierzcho³ek stosu
+
+	load   4        #
+	sub   =2        #
+	store  4        #
+	load  *0        #
+	store  3        # r3 = "podwierzcho³ek" stosu
+
+	# klasyfikujemy y
+
+	load   5
+	sub    =1       # (y-2) == 0 -> x,y = 0,2 -> plus
+	jzero  plus
+
+	sub    =1       # (y-3) == 0 -> x,y = 0,3 -> minus
+	jzero  minus
+
+	sub    =1       # (y-4) == 0 -> x,y = 0,4 -> mno¿enie
+	jzero  mult
+
+	sub    =1       # (y-5) == 0 -> x,y = 0,5 -> dzielenie
+	jzero  div
+	jump   error    # niew³a¶ciwy kod!
+
+plus:	load   2
+	add    3
+	jump   pushnum
+
+minus:	load   3
+	sub    2
+	jump   pushnum
+
+mult:	load   3
+	mult   2
+	jump   pushnum
+
+div:	load   3
+	div    2
+
+pushnum: store  *4       # stack[sp++] = r0
+
+	load    4       # sp++
+	add    =1       #
+	store   4       #
+	jump    next    #
+
+eol:	write   10      # zapisz top[stack]
+error:	halt

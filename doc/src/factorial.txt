@@ -1,0 +1,36 @@
+# function factorial(n)
+# {
+#  var res = 1;
+#  while (n)
+#       {
+#        res = res*n;
+#          n = n-1;
+#       }
+#  return res;
+# }
+#
+# proponowane wyra¿enie watch
+# n=1 res=2
+
+	read  1         # r1 = n
+
+	load =0         #
+	sub   1         #
+	jgtz  negative  # n < 0?
+
+	load =1         # r2 = res = 1
+	store 2         #
+
+	load  1
+
+while:	jzero endwhile
+	mult  2
+	store 2         # res = res * n
+
+	load  1
+	sub  =1
+	store 1         # n = n-1
+	jump while
+
+endwhile: write 2         # return
+negative: halt

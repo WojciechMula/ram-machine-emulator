@@ -1,0 +1,190 @@
+<!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="pl">
+<head>
+	<meta http-equiv="Content-type"     content="text/html;charset=iso-8859-2">
+	<meta http-equiv="Content-language" content="pl">
+
+	<meta name="Description" content="emulator maszyny RAM">
+	<meta name="Keywords"    content="maszyna RAM, emulator">
+	<meta name="Author"      content="Wojciech Muła">
+	<meta name="Generator"   content="med, nedit, vim">
+	<link rel="stylesheet" href="style.css" type="text/css">
+	<title>Emulator maszyny RAM - obsługa skryptu</title>
+</head>
+<body>
+
+<a href="../index.html">Spis treści</a>
+<hr>
+
+<h1>Spis treści</h1>
+
+<ul>
+	<li><a href="#p61">Konsola tekstowa</a>
+	<li><a href="#p62">Edytor i kompilator</a>
+	<li><a href="#p63">Emulator</a>
+	<ul>
+		<li><a href="#p631">Maszyna</a>
+		<li><a href="#p632">Rejestry</a>
+		<li><a href="#p633">Taśma wejściowa</a>
+		<li><a href="#p634">Taśma wyjściowa</a>
+	</ul>
+</ul>
+
+<h1>Obsługa skryptu</h1>
+
+<div class="para">
+
+<p>Ekran został podzielony na trzy części:
+
+<ul>
+	<li>Edytor + kompilator
+	<li>Konsola tekstowa
+	<li>Interfejs emulatora
+</ul>
+
+<p>W dalszym opisie pozwolę sobie pominąć rzeczy oczywiste (np. do czego służy przycisk <q>wyczyść konsolę</q>), by nie obrażać inteligencji szanownego czytelnika.
+
+<a name="p61"></a>
+<h2>Konsola tekstowa</h2>
+
+<center>
+<img src="2.png" alt="Konsola tekstowa">
+</center>
+
+<p>Konsola tekstowa jest używana przez kompilator i emulator do wypisywania komunikatów; komunikaty zostały podzielone na trzy klasy:
+
+<dl>
+	<dt><strong>Błędy</strong></dt>
+	<dd>Uniemożliwiają dalsze funkcjonowanie kompilatora (błędy składniowe, powtórzenie etykiet) lub emulatora (dzielenie przez zero, ujemna wartość w adresowaniu pośrednim).</dd>
+
+	<dt><strong>Ostrzeżenia</strong></dt>
+	<dd>Informacje o istotnych rzeczach, np. brak instrukcji <code>halt</code>, definicja etykiety do której nie ma odwołania w programie.</dd>
+
+	<dt><strong>Informacje</strong></dt>
+	<dd></dd>
+</dl>
+
+<p>Komunikaty można przekierować zarówno do okienka tekstowego, jak również do wyskakującego okienka. Dla każdej z wyżej wymienionych klas istnieje możliwość wyboru sposobu prezentacji, służą do tego przełączniki <q>na konsole</q> oraz <q>do okienka</q>.
+
+<a name="p62"></a>
+<h2>Edytor i kompilator</h2>
+
+<center>
+<img src="1.png" alt="Edytor i kompilator">
+</center>
+
+<p>Kompilator odczytuje tekst źródłowy programu z okienka tekstowego.  Przycisk <q>kompilacja</q> inicjuje kompilację. Jeśli przeszła ona bezbłędnie, to włączany jest tryb emulacji: możliwość edycji/kompilacji zostaje zablokowana, włączany jest interfejs emulatora.
+
+<a name="p63"></a>
+<h2>Emulator</h2>
+
+<center>
+<img src="3.png" alt="Emulator">
+</center>
+
+<p>Interfejs emulatora został podzielony na cztery części: Maszyna, Rejestry, Taśma wejściowa, Taśma wyjściowa.
+
+<a name="p631"></a>
+<h3>Maszyna</h3>
+
+<p>Naciśnięcie przycisku <q>wykonaj instrukcję</q> powoduje wykonanie bieżącej instrukcji. W okienku znajdującym się poniżej wyświetlane są trzy kolejne linie kodu, bieżąca instrukcja jest oznaczona przez <code>=&gt;</code>. Wszystkie linie są poprzedzone <strong>fizycznym</strong> numerem linii (maksymalnie 3-cyfrowym), niezależnie od tego czy w kodzie występuje numer linii, czy nie. Może to wyglądać np. tak:
+
+<pre>
+    5: add   0  # r0 *= 2
+=&gt;  6: add   5
+    7: read  1
+</pre>
+
+<p>Naciśnięcie przycisku <q>reset</q> powoduje wyzerowanie rejestrów i przejście na początek programu. Zawartość taśm nie jest zmieniana.
+<p>Naciśnięcie przycisku <q>stop</q> powoduje zakończenie trybu emulacji i przejście w tryb edycji.
+
+<a name="p632"></a>
+<h3>Rejestry</h3>
+
+<p>W polu tekstowym wyświetlane są wartości obserwowanych rejestrów.
+<p>Naciśnięcie przycisku <q>obserwuj rejestry...</q> (ang. <i>watch</i>) powoduje wyświetlenie okienka, w którym można wpisać listę wyrażeń (wyrażenia oddziela się spacją/spacjami); <strong>zawsze</strong> na początku wyświetlany jest akumulator. Wszystkie błędnie zapisane wyrażenia są ignorowane.
+
+<div align="center" style="margin-top: 1em; margin-bottom: 1em">
+<table class="full" cellspacing="1">
+<tbody>
+	<tr style="text-align: center; font-weight: bold">
+		<td rowspan="2">wyrażenie
+		<td colspan="2">wyświetlany tekst<br>pole <q>wyświetl numery rejestrów</q>:
+
+	<tr style="text-align: center; font-weight: bold">
+		<td>wyłączone
+		<td>włączone
+
+	<tr>
+		<td>&nbsp;
+		<td><code>r0=xxx</code>
+		<td><code>r0=xxx</code>
+	<tr>
+		<td colspan="3" style="font-weight: bold">numer rejestru
+	<tr>
+		<td><i>numer</i>
+		<td><code>r0=xxx r<i>numer</i>=yyy</code>
+		<td><code>r0=xxx r<i>numer</i>=yyy</code>
+
+	<tr>
+		<td colspan="3" style="font-weight: bold">nazwany rejestr
+	<tr>
+		<td><i>nazwa</i>=<i>numer</i>
+		<td><code>r0=xxx <i>nazwa</i>=yyy</code>
+		<td><code>r0=xxx <i>nazwa</i>(<i>numer</i>)=yyy</code>
+
+	<tr>
+		<td colspan="3" style="font-weight: bold">tablica (zakres rejestrów)
+	<tr>
+		<td><i>lo</i>:<i>hi</i>
+		<td><code>r0=xxx a[<i>lo</i>:<i>hi</i>]=[yyy,zzz,...,vvv]</code>
+		<td><code>r0=xxx a[<i>lo</i>:<i>hi</i>]=[yyy,zzz,...,vvv]</code>
+
+	<tr>
+		<td colspan="3" style="font-weight: bold">nazwana tablica
+	<tr>
+		<td><i>tablica</i>=<i>lo</i>:<i>hi</i>
+		<td><code>r0=xxx <i>tablica</i>=[yyy,zzz,...,vvv]</code>
+		<td><code>r0=xxx <i>tablica</i>[<i>lo</i>:<i>hi</i>]=[yyy,zzz,...,vvv]</code>
+</tbody>
+</table>
+
+</div>
+
+<p>Oto dość rozbudowany przykład. Niech rejestry mają następujące wartości:
+
+<pre>
+r0=777, r1=111, r2=222, r3=333, r4=-5, r5=-6, r6=-7, r7=12, r8=13
+</pre>
+
+<p>Wyrażenie wpisane do okienka ma następującą postać
+
+<pre>
+2 3 n=0 zmienna=7 8 tab=4:6 0:4 tab2=5
+</pre>
+
+a zostanie wyświetlone tak (pole <q>wyświetl numery rejestrów</q> wyłączone)
+
+<pre>
+r2=222 r3=333 n=777 zmienna=12 r8=13 tab=[-5,-6,-7] a[0:4]=[777,111,222,333,-5] tab2=-6
+</pre>
+
+<a name="p633"></a>
+<h3>Taśma wejściowa</h3>
+
+<p>Naciśnięcie przycisku <q>dopisz do taśmy...</q> powoduje wyświetlenie okienka, w którym można wpisać kolejne liczby (oddzielone spacjami lub przecinkami) - zostaną one dopisane do taśmy. Innym sposobem dodania nowych wartości do taśmy jest naciśnięcie przycisku <q>wylosuj</q> - do taśmy dopisywana jest liczba wylosowana z przedziału określonego w polach obok (domyślnie jest to przedział od 0 do 100).
+<p>W okienku poniżej wyświetlana jest zawartość taśmy wejściowej - pierwsza liczba od lewej jest tą, która zostanie odczytana przy następnym wywołaniu instrukcji <code>read</code>. Próba odczytu z pustej taśmy nie kończy się błędem - do taśmy dopisywana jest przypadkowa wartość.
+<p>Nie ma możliwości przewijania widoku taśmy, jeśli więc trzeba zobaczyć jej zawartość, można nacisnąć przycisk <q>na konsolę</q>. Spowoduje to wypisanie wszystkich elementów taśmy na konsolę. 
+
+<a name="p634"></a>
+<h3>Taśma wyjściowa</h3>
+
+<p>Ostatnia liczba z prawej jest ostatnio zapisaną przez rozkaz <code>write</code>.
+<p>Podobnie jak dla taśmy wejściowej, tak i tu nie ma możliwości przewijania widoku. Uwagi j.w.
+</div>
+
+<hr>
+
+</body>
+</html>
+

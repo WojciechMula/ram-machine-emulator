@@ -1,0 +1,143 @@
+<!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="pl">
+<head>
+	<meta http-equiv="Content-type"     content="text/html;charset=iso-8859-2">
+	<meta http-equiv="Content-language" content="pl">
+
+	<meta name="Description" content="emulator maszyny RAM">
+	<meta name="Keywords"    content="maszyna RAM, emulator">
+	<meta name="Author"      content="Wojciech Muła">
+	<meta name="Generator"   content="med, nedit, vim">
+	<link rel="stylesheet" href="style.css" type="text/css">
+	<title>Emulator maszyny RAM - wersja konsolowa</title>
+</head>
+<body>
+
+<a href="../index.html">strona główna</a>
+
+<hr>
+
+<h1>Emulator maszyny RAM - wersja konsolowa</h1>
+
+<div class="para">
+<p>Emulator maszyny RAM w wersji konsolowej został napisany w języku <a href="http://www.python.org">Python</a>; wersja interpretera na której powstał to&nbsp;2.2.1, niestety programy nie był testowany na żadnych wcześniejszych wesjach.
+<p>Wersja konsolowa, w przeciwieństwie do wersji JavaScript-owej, nie posiada ograniczeń co do ilości rejestrów, ani zakresu liczb przechowywanych w rejestrach.
+<p>Kod programu dla maszyny RAM musi zostać zapisany w pliku tekstowym. Podczas wykonywania kodu emulator wypisuje linijkę z pliku (poprzedzając ją numerem) w której znajduje się instrukcja którą wykonał, oraz, w następnej linii, zawartość rejestrów. Wyświetlane są tylko te rejestry, do których choć raz odwołano się w programie; zawsze wyświetalny jest akumulator. Gdy program się zakończy, wypisywana jest zawartość taśm - kolejno - wejściowej i wyjściowej.
+<p>Gdy emulator napotka instrukcję <tt>read</tt> prosi użytkownika o wpisanie wartości, która znajduje się na taśmie wejściowej.
+<p>Do działania potrzebne są następujące pliki:
+<ul>
+	<li><a href="main.py">main.py</a> - główny program,
+	<li><a href="compiler.py">compiler.py</a> - kompilator,
+	<li><a href="emulator.py">emulator.py</a> - emulator.
+</ul>
+
+<p>Wywołanie programu jest następujące (<tt>$</tt> - znak zachęty interpretera poleceń):
+<pre>
+$ python2 main.py --file=<i>źródło programu</i>
+</pre>
+
+<p>Przykładowy wynik pracy programu dla funkcji obliczającej silnię (program znajduje się wśród <a href="examples.html">przykładów</a>).
+
+<pre>
+$ python2 main.py --file=factorial.txt
+Parsing factorial.txt file...
+16: 	read  1         # r1 = n
+<b>read: 4</b>
+r0=0 r1=4 
+18: 	load =0         #
+r0=0 r1=4 
+19: 	sub   1         #
+r0=-4 r1=4 
+20: 	jgtz  negative  # n &lt; 0?
+r0=-4 r1=4 
+22: 	load =1         # r2 = res = 1
+r0=1 r1=4 
+23: 	store 2         #
+r0=1 r1=4 r2=1 
+25: 	load  1
+r0=4 r1=4 r2=1 
+26: while:
+r0=4 r1=4 r2=1 
+27: 	jzero endwhile
+r0=4 r1=4 r2=1 
+28: 	mult  2
+r0=4 r1=4 r2=1 
+29: 	store 2         # res = res * n
+r0=4 r1=4 r2=4 
+31: 	load  1
+r0=4 r1=4 r2=4 
+32: 	sub  =1
+r0=3 r1=4 r2=4 
+33: 	store 1         # n = n-1
+r0=3 r1=3 r2=4 
+34: 	jump while
+r0=3 r1=3 r2=4 
+26: while:
+r0=3 r1=3 r2=4 
+27: 	jzero endwhile
+r0=3 r1=3 r2=4 
+28: 	mult  2
+r0=12 r1=3 r2=4 
+29: 	store 2         # res = res * n
+r0=12 r1=3 r2=12 
+31: 	load  1
+r0=3 r1=3 r2=12 
+32: 	sub  =1
+r0=2 r1=3 r2=12 
+33: 	store 1         # n = n-1
+r0=2 r1=2 r2=12 
+34: 	jump while
+r0=2 r1=2 r2=12 
+26: while:
+r0=2 r1=2 r2=12 
+27: 	jzero endwhile
+r0=2 r1=2 r2=12 
+28: 	mult  2
+r0=24 r1=2 r2=12 
+29: 	store 2         # res = res * n
+r0=24 r1=2 r2=24 
+31: 	load  1
+r0=2 r1=2 r2=24 
+32: 	sub  =1
+r0=1 r1=2 r2=24 
+33: 	store 1         # n = n-1
+r0=1 r1=1 r2=24 
+34: 	jump while
+r0=1 r1=1 r2=24 
+26: while:
+r0=1 r1=1 r2=24 
+27: 	jzero endwhile
+r0=1 r1=1 r2=24 
+28: 	mult  2
+r0=24 r1=1 r2=24 
+29: 	store 2         # res = res * n
+r0=24 r1=1 r2=24 
+31: 	load  1
+r0=1 r1=1 r2=24 
+32: 	sub  =1
+r0=0 r1=1 r2=24 
+33: 	store 1         # n = n-1
+r0=0 r1=0 r2=24 
+34: 	jump while
+r0=0 r1=0 r2=24 
+26: while:
+r0=0 r1=0 r2=24 
+27: 	jzero endwhile
+r0=0 r1=0 r2=24 
+36: endwhile:
+r0=0 r1=0 r2=24 
+37: 	write 2         # return
+r0=0 r1=0 r2=24 
+38: negative:
+r0=0 r1=0 r2=24 
+39: 	halt
+r0=0 r1=0 r2=24 
+input tape : [4]
+output tape: [24]
+</pre>
+</div>
+<hr>
+
+</body>
+</html>
+

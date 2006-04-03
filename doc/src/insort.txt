@@ -1,0 +1,138 @@
+# function selection_sort(n)
+# {
+#  if (n == 0)
+#  	return;
+#
+#  k   = n; // odczytywanie tablicy
+#  idx = 10;
+#  while (k--)
+#  	tab[idx++] = read;
+#
+#  m = n;   // sortowanie
+#  i = 10;
+#  while (true)
+#  	{
+#  	 j   = i+1;
+#  	 idx = i;
+#  	 max = tab[i]
+#  	 k   = n-j
+#  	 while (k)
+#  		{
+#  		 tmp = tab[j]
+#  		 if (tmp > max)
+#  		 	{
+#  		 	 max = tmp;
+#  		 	 idx = j
+#  		 	}
+#  		 j++;
+#  		 k--;
+#  		}
+#  	 tmp      = tab[i];
+#  	 tab[i]   = tab[idx]
+#  	 tab[idx] = tmp;
+#
+#  	 i++;
+#  	 if (--m == 0) break
+#  	}
+# }
+#
+# proponowane wyra¿enie watch (dla czê¶ci sortuj±cej):
+# m=1 i=2 j=3 k=6 idx=4 max=5 tmp=7 tab=10:20
+#
+# przyk³adowe dane:
+# 5, 1, 12, 13, 8, 4
+
+	### odczytywanie tablicy ###
+
+	read 9          # r9 = n
+
+	load 9
+	jzero end
+
+	load  =10       # tab zaczyna sie od rej. 10-tego
+	store 8         # r8 = idx
+
+	load  9         #
+	store 7         # r7 = k
+
+readtab: read *8
+
+	load  8         #
+	add  =1         #
+	store 8         # idx++
+
+	load  7
+	sub  =1
+	store 7
+	jgtz  readtab
+
+	### sortowanie ###
+
+	load  9
+	store 1         # r1 = m=n
+
+	load =10
+	store 2         # r2 = i=10
+
+while1: load  2         #
+	add  =1         #
+	store 3         # r3 = j=i+1
+
+	load  2         #
+	store 4         # r4 = idx=i
+
+	load *4         #
+	store 5         # r5 = max=tab[i]
+
+	load  9
+	sub   3
+	add  =10
+	store 6         # r6 = k=n-j
+
+while2:		load  6           #
+		jzero endwhile2   # k==0?
+
+		load *3           #
+		store 7           # tmp = tab[j]
+
+		sub   5           # tmp-max > 0
+		jgtz  then
+		jump  endif
+
+	then:	load  7           #
+		store 5           # max = tmp
+
+		load  3           #
+		store 4           # idx = j
+
+	endif:	load  3           #
+		add  =1           #
+		store 3           # j++
+
+		load  6           #
+		sub  =1           #
+		store 6           # k--
+
+		jump while2
+
+endwhile2: load  *2     #
+	store  7        # r7 = tmp = tab[i]
+
+	load  *4        # r0 = tab[idx]
+	store *2        # tab[i]   = tab[idx]
+
+	load   7        #
+	store *4        # tab[idx] = tmp
+
+	load   2        #
+	add   =1        #
+	store  2        # i++
+
+	load   1        #
+	sub   =1        #
+	store  1        # m--
+	jzero  end      # m==0?
+
+	jump while1
+
+end:	halt

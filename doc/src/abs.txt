@@ -1,0 +1,13 @@
+#          /  x, dla x >=0
+# abs(x) = |
+#          \ -x, dla x < 0
+#
+	read 0
+	jgtz noabs      # r0 > 0
+	                # r0 < 0
+	store  1        # r1 := r0
+	load  =0        # r0 := 0
+	sub    1        # r0 := 0-r1
+
+noabs:	write 0
+	halt

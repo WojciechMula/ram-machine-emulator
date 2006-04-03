@@ -1,0 +1,90 @@
+# function reverse(n)
+# {
+#  k=n
+#  i=10;
+#  while (k)
+#   {
+#    tab[i] = read;
+#    i++;
+#    k--;
+#   }
+#
+#  k=n div 2
+#  i=10      // indeks pierwszego
+#  j=10+n-1  // indeks ostatniego elementu
+#  while (k--)
+#    {
+#     tmp    = tab[i]
+#     tab[i] = tab[j]
+#     tab[j] = tmp
+#
+#     i++;
+#     j--;
+#    }
+#
+# proponowane wyra¿enie watch:
+# n=9 k=8 i=1 j=2 tmp=3 tab=10:20
+#
+# przyk³adowe dane
+# 5 1 2 3 4 5
+
+	### wczytywanie ###
+
+	read 9          # r9 = n
+	load 9
+	jzero end
+
+	load =10        #
+	store 1         # r1 = i
+
+	load  9         #
+	store 8         # r2 = k
+
+readtab: read *1         # tab[i] = read
+
+	load  1         #
+	add  =1         #
+	store 1         # i++
+
+	load  8         #
+	sub  =1         #
+	store 8         # k--
+	jgtz  readtab
+
+	### odwracanie ###
+
+	load =10        #
+	store 1         # r1 = i=10
+
+	load =9         #
+	add   9         # r2 = j=10+n-1
+	store 2
+
+	load  9         #
+	div  =2         #
+	store 8         # r8 = k=n div 2
+
+rev:	load   8        #
+	jzero  end      #
+	sub   =1        #
+	store  8        # if (k--) goto end
+
+	load  *1        #
+	store  3        # tmp    = tab[i]
+
+	load  *2        #
+	store *1        # tab[i] = tab[j]
+
+	load   3        #
+	store *2        # tab[j] = tmp
+
+	load   1        #
+	add   =1        #
+	store  1        # i++
+
+	load   2        #
+	sub   =1        #
+	store  2        # j--
+	jump rev
+
+end:	halt

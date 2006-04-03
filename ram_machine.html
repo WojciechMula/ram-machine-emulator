@@ -1,0 +1,410 @@
+<!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+	**** Emulator maszyny RAM ****
+
+	Wojciech Muła, kwiecień 2003
+	wojciech_mula(at)poczta(dot)onet(dot)pl
+
+	License GPL2 or later (see http://www.gnu.org for details)
+-->
+
+<html lang="pl">
+<head>
+	<meta http-equiv="Content-type"     content="text/html; charset=iso-8859-2">
+	<meta http-equiv="Content-language" content="pl">
+
+<title>Emulator maszyny RAM, wersja 1.01</title>
+
+<style type="text/css">
+body
+	{
+		font-family : arial;
+	}
+
+textarea.editor
+	{
+		color       : blue;
+		font-weight : bold;
+		border-color: black;
+		border-style: solid;
+		border-width: 1px;
+	}
+
+textarea.disabled
+	{
+		color       : black;
+
+		border-color: black;
+		border-style: solid;
+		border-width: 1px;
+		background-color: floralwhite;
+	}
+
+div.border
+	{
+		color        : black;
+		border-width : 1px;
+		border-style : solid;
+		border-color : black;
+
+		padding      : 1em;
+		margin-top   : 0.2em;
+		margin-bottom: 0.2em;
+		background-color: gainsboro;
+	}
+
+input   {	font-family     : monospace; }
+
+input.text
+	{
+		font-family     : monospace;
+	}
+
+input.button
+	{
+		width : 20%;
+		font-family: arial;
+	}
+
+input.button2
+	{
+		width : 10%;
+		font-family: arial;
+	}
+</style>
+
+<script type="text/javascript" src="global_variables.js"></script>
+<script type="text/javascript" src="console.js"></script>
+<script type="text/javascript" src="string.js"></script>
+<script type="text/javascript" src="compiler.js"></script>
+<script type="text/javascript" src="watch.js"></script>
+<script type="text/javascript" src="input.js"></script>
+<script type="text/javascript" src="output.js"></script>
+<script type="text/javascript" src="emulator.js"></script>
+<script type="text/javascript" src="interface.js"></script>
+</head>
+
+<body onLoad="init();">
+
+<b>Wojciech Muła, kwiecień 2003</b>
+
+<div class="border">
+<form name="_compiler" action="/dev/null">
+
+	<!--
+		code
+		compile
+		clear_con
+		clear
+	-->
+
+	<b>Edytor</b><br>
+
+	<textarea
+		name ="code"
+		class="editor"
+		title="kod programu"
+		rows="10" cols="85"></textarea>
+
+	<br>
+	<input
+		name ="compile"
+		value="kompilacja"
+		title="inicjuje kompilację"
+
+		onClick="compile_program();"
+
+		class="button"
+		type ="button">
+
+
+	<span title="przed kompilacją czyść konsolę">
+		<input
+			name="clear_con"
+			type="checkbox"
+			checked>
+		czyść konsolę
+	</span>
+
+        <br>
+	<input
+		name ="clear"
+		value="skasuj program"
+		title="kasuje cały kod!"
+
+		onClick="if (confirm('Program zostanie usunięty!')) document._compiler.code.value = '';"
+
+		class="button"
+		type ="button">
+
+</form>
+</div>
+
+<div class="border">
+<form name="_console" action="/dev/null">
+
+	<b>Konsola</b><br>
+	<!--
+		display
+		clear
+		err2con
+		err2win
+		wrn2con
+		wrn2win
+		inf2con
+		inf2win
+	-->
+
+	<textarea
+		name ="display"
+		class="disabled"
+		title=""
+
+		rows="10" cols="85"
+		readonly>
+	</textarea>
+
+	<br>
+	<input
+		name ="clear"
+		value="wyczyść konsolę"
+		title="czyści zawartość konsoli"
+
+		onClick="clear_console();"
+
+		type ="button"
+		class="button"
+		>
+
+
+	<table border="0" cellpadding="3">
+	<tbody>
+
+	<tr>
+		<td>
+		błędy:
+		<td>
+		ostrzeżenia:
+		<td>
+		komunikaty:
+
+	<tr>
+		<td title="informacje o błędach są wysyłane na konsolę">
+			<input type="checkbox" name="err2con" checked>na konsole
+		<td title="ostrzeżenia są wysyłane na konsolę">
+			<input type="checkbox" name="wrn2con" checked>na kosnole
+		<td title="komunikaty są wysyłane na konsolę">
+			<input type="checkbox" name="inf2con" checked>na konsole
+
+	<tr>
+		<td title="informacje o błędach są wyświetlane w wyskakujących okienkach">
+			<input type="checkbox" name="err2win" checked>do okienka
+		<td title="ostrzeżenia są wyświetlane w wyskakujących okienkach">
+			<input type="checkbox" name="wrn2win"        >do okienka
+		<td title="komunikaty są wyświetlane w wyskakujących okienkach (niezalecane)">
+			<input type="checkbox" name="inf2win"        >do okienka
+
+	</tbody>
+	</table>
+
+</form>
+</div>
+
+<div class="border">
+
+	<b>Emulator</b>
+
+<form name="_machine" action="/dev/null">
+	<b>Maszyna</b><br>
+	<!--
+		exec
+		run
+		reset
+		stop
+		display
+	-->
+	<input
+		name ="exec"
+		value="wykonaj instrukcję"
+		title=""
+
+		onClick="execute_instruction();"
+
+		type="button"
+		class="button">
+
+	<input
+		name ="reset"
+		value="reset"
+		title="reset maszyny i programu (wyjście jest czyszczone, wejście nie)"
+
+		onClick="emulator_reset_machine();"
+
+		type ="button"
+		class="button2">
+
+	<input
+		name ="stop"
+		value="stop"
+		title="zatrzymanie maszyny, powrót do trybu edycji"
+
+		onClick="emulator_stop();"
+
+		type ="button"
+		class="button2">
+	<br>
+	<textarea
+		name ="display"
+		title="bieżąca instrukcja"
+		class="disabled"
+
+		rows="3" cols="85"
+		readonly></textarea>
+</form>
+
+
+<form name="_watch" action="/dev/null">
+	<b>Rejestry</b><br>
+	<!--
+		setwatch
+		show_regnum
+		display
+	-->
+	<input
+		name ="setwatch"
+		value="obserwuj rejestry..."
+		title=""
+
+		onClick="watch_userprompt()"
+
+		type ="button"
+		class="button">
+
+	<span title="wyświetlanie numerów rejestrów, nawet wówczas gdy zostały podane nazwy">
+		<input
+			name="show_regnum"
+			onClick="watch_update_view()"
+			type="checkbox">wyświetl numery rejestrów
+	</span>
+	<br>
+
+	<input
+		name ="display"
+		title="zawartość rejestrów"
+
+		type ="text"
+		class="text"
+
+		size="85" readonly>
+</form>
+
+<form name="_input" action="/dev/null">
+	<br>
+	<b>Taśma wejściowa</b><br>
+	<!--
+		add_user
+		add_rand
+		lo
+		hi
+		clear
+		dump
+		display
+	-->
+
+	<input
+		name ="add_user"
+		value="dopisz do taśmy..."
+		title="wyświetla okienko, w którym możesz wpisać dodatkowe dane na taśmę wejściową"
+
+		onClick="intape_add_userval()"
+
+		type ="button"
+		class="button">
+
+	<input
+		name ="add_rand"
+		value="wylosuj"
+		title="dopisuje do taśmy losowo wybraną liczbę"
+
+		type ="button"
+		class="button2"
+		onClick="intape_add_randval()">
+
+	<input name="lo" type="text" size="9" title="minimalna wartość losowanej liczby"> ...
+	<input name="hi" type="text" size="9" title="maksymalna wartość losowanej liczby">
+	<br>
+
+	<input
+		name ="display"
+		title="zawartość taśmy wejściowej"
+
+		type ="text"
+		class="text"
+		size="85" readonly>
+	<br>
+
+	<input
+		name ="clear"
+		value="wyczyść taśmę"
+		title="czyści taśmę wejściową"
+
+		onClick="intape_clear()"
+
+		type ="button"
+		class="button">
+
+	<input
+		name ="dump"
+		value="na konsolę"
+		title="wypisuje zawartość taśmy na konsolę"
+
+		onClick="intape_dump2con()"
+
+		type ="button"
+		class="button">
+</form>
+
+<form name="_output" action="/dev/null">
+	<br>
+	<b>Taśma wyjściowa</b><br>
+	<!--
+		clear
+		dump
+		display
+	-->
+
+	<input
+		name ="display"
+		title="zawartość taśmy wyjściowej"
+
+		class="text"
+		type ="text"
+		size="85" readonly>
+	<br>
+
+	<input
+		name ="clear"
+		value="wyczyść taśmę"
+		title="czyści taśmę wyjściową"
+
+		onClick="outtape_clear()"
+
+		type ="button"
+		class="button">
+
+	<input
+		name ="dump"
+		value="na konsolę"
+		title="wypisuje zawartość taśmy na konsolę"
+
+		onClick="outtape_dump2con()"
+
+		type ="button"
+		class="button">
+</form>
+
+</div>
+
+</body>
+</html>
+

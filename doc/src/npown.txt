@@ -1,0 +1,42 @@
+# function npown(n)
+# {
+#  var res = n;
+#  var   k = n-1;
+#  while (k)
+#       {
+#        res = res*n;
+#          k = k-1;
+#       }
+#  return res;
+# }
+#
+# proponowane wyra¿enie watch
+# n=1 k=3 res=2
+
+	read  0
+	store 1         # r1 = n
+	store 2         # r2 = res = n
+
+	sub  =1
+	store 3         # r3 = k   = n-1
+
+	load =0         #
+	sub   1         #
+	jgtz  negative  #
+	jzero zero      # n &lt;= 0?
+
+	load  3
+
+while:	jzero endwhile
+	load  2
+	mult  1
+	store 2         # res = res * n
+
+	load  3
+	sub  =1
+	store 3         # k = k-1
+	jump while
+
+endwhile: write 2         # return
+zero:     halt
+negative: halt

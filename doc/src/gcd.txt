@@ -1,0 +1,37 @@
+# function gcd(a,b)
+# {
+#  while (true)
+#    {
+#     c = a-b
+#     if (c > 0) a=c
+#           else b=-c
+#
+#     if (c==0)
+#           break;
+#    }
+#  return a;
+# }
+#
+# proponowane wyra¿enie watch
+# c=0 a=1 b=2
+
+	read 1          # r1 = a
+	read 2          # r2 = b
+
+while:	load 1          #
+	sub  2          # r0 = c = a-b
+	jgtz then
+	jump else
+
+then:	store 1         # a = c
+	jump  endif
+
+else:	store 2
+	load =0
+	sub   2
+	store 2         # b = -c
+
+endif:	jzero break     # c ?= 0
+	jump  while
+
+break:	write 1         # return a

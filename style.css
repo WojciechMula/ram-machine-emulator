@@ -1,0 +1,162 @@
+body {
+	font-family	: Georgia, Times, serif;
+}
+
+a:visited {
+	color	: #05f;
+}
+a.button {
+	font-size	: larger;
+}
+
+p {
+	text-indent	: 1.5em;
+	text-align	: justify;
+}
+
+p.ni {
+	text-indent	: 0.0px;
+}
+
+dt {
+	margin-top	: 1.5em;
+	margin-bottom	: 0.3em;
+}
+
+h1, h2, h3 {
+	color	: darkblue;
+} 
+
+h1 {
+	font-size	: large;
+}
+h2 {
+	font-size	: medium
+}
+h3 {
+	font-size	: small;
+	text-align	: center;
+}
+img.main {
+	padding		: 10px;
+	border-width	: 1px;
+	border-style	: solid;
+	margin-top	: 1em;
+	margin-bottom	: 1em;
+}
+
+div.para {
+	margin-left	: 3%;
+	margin-right	: 3%;
+	margin-bottom	: 1em;
+	margin-top	: 1em;
+}
+div.para h2 {
+	margin-left	: -1.5%
+}
+
+table {
+	font-size	: small;
+	margin-top	: 0em;
+	margin-bottom	: 0em;
+	padding		: 0px;
+	border-width	: 2px;
+	border-color	: black;
+	border-style	: solid;
+
+	border-top-width	: 2px;
+	border-right-width	: 0px;
+	border-bottom-width	: 0px;
+	border-left-width	: 2px;
+}
+
+table.null {
+	padding		: 5px;
+	border-style	: none;
+	border-width	: 0px;
+}
+
+table.full, table.full td {
+	padding		: 5px;
+
+	border-style	: solid;
+	border-width    : 1px;
+}
+
+table td {
+	padding		: 5px;
+
+	border-style	: none;
+	border-width	: 0px;
+}
+
+table td.rb {
+	border-right-width	: 2px;
+	border-right-style	: solid;
+	border-bottom-width	: 2px;
+	border-bottom-style	: solid;
+}
+
+table td.r {
+	border-right-width	: 2px;
+	border-right-style	: solid;
+	border-bottom-width	: 1px;
+	border-bottom-style	: dotted;
+}
+
+table td.b {
+	border-right-width	: 1px;
+	border-right-style	: none;
+	border-bottom-width	: 2px;
+	border-bottom-style	: solid;
+}
+
+table td.n {
+	border-right-width	: 2px;
+	border-right-style	: none;
+	border-bottom-width	: 1px;
+	border-bottom-style	: dotted;
+}
+
+q {
+	color: blue;
+}
+
+strong.name {
+	color: green;
+}
+
+strong.i {
+	color: blue;
+}
+
+kbd {
+	color		: black;
+	font-size	: small;
+}
+
+code {
+	color		: darkblue;
+	font-size	: small;
+}
+
+tt {
+	font-family	: Courier, monospace;
+}
+
+pre {
+	font-family	: Courier, monospace;
+
+	border-width	: 1px;
+	border-color	: black;
+	border-style	: solid;
+
+	margin-top	: 1em;
+	margin-bottom	: 1em;
+	padding		: 0.5em;
+}
+
+pre.code {
+	background-color: floralwhite;
+	color		: darkblue;
+}

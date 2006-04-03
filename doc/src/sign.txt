@@ -1,0 +1,16 @@
+#           / +1, dla x>0
+# sign(x) = |  0, dla x=0
+#           \ -1, dla x<0
+
+	read  0
+	jzero zero
+	jgtz  plus
+
+minus:	write =-1
+	halt
+
+plus:	write =1
+	halt
+
+zero:	write =0
+	halt

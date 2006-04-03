@@ -1,0 +1,20 @@
+# a mod b = a - (a div b)*b
+
+	read 1          # a
+	read 0          # b
+	jzero error     # b=0
+
+	# b != 0
+	store 2         # r2 = b
+	load  1         # r0 = a
+
+	div   2         # r0 = a div b
+	mult  2         # r0 = (a div b)*b
+
+	store 2         #
+	load  1         #
+	sub   2         # r0 := a - (...)
+
+	write 0
+
+error:	halt

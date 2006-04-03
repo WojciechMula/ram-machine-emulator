@@ -1,0 +1,331 @@
+<!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="pl">
+<head>
+	<meta http-equiv="Content-type"     content="text/html;charset=iso-8859-2">
+	<meta http-equiv="Content-language" content="pl">
+
+	<meta name="Description" content="emulator maszyny RAM">
+	<meta name="Keywords"    content="maszyna RAM, emulator">
+	<meta name="Author"      content="Wojciech Muła">
+	<meta name="Generator"   content="med, nedit, vim">
+	<link rel="stylesheet" href="style.css" type="text/css">
+	<title>Emulator maszyny RAM - opis maszyny oraz składnia programów</title>
+</head>
+<body>
+
+<a href="../index.html">strona główna</a>
+<hr>
+
+<h1>Spis treści</h1>
+
+<ul>
+	<li><a href="#a1">Opis maszyny RAM</a></li>
+	<li><a href="#a2">Zestaw instrukcji</a></li>
+	<li><a href="#a3">Składnia programu</a></li>
+</ul>
+
+<a name="a1"></a>
+<h1>Opis maszyny RAM</h1>
+
+<div class="para">
+
+<p>Jednym z modeli obliczeniowych jest <strong>maszyna RAM</strong> - maszyna o swobodnym dostępie do pamięci; jej schemat funkcjonalny został przedstawiony poniżej.
+
+<div align="center" style="margin-top: 1em; margin-bottom: 1em">
+	<img src="scheme.png" alt="schemat" class="main"><br>
+	<a href="scheme.txt" title="Schemat dla przeglądarek tekstowych">Schemat dla przeglądarek tekstowych</a>
+</div>
+
+<dl>
+	<dt><strong class="name">Pamięć programu</strong></dt>
+	<dd>Przechowuje instrukcje interpretowane i wykonywane przez maszynę. Nie można jej odczytywać ani zapisywać.</dd>
+
+	<dt><strong class="name">Licznik rozkazów</strong></dt>
+	<dd>Wskazuje instrukcję, która ma zostać wykonana w następnym cyklu maszynowym.</dd>
+
+	<dt><strong class="name">Pamięć (zespół rejestrów)</strong></dt>
+	<dd>Składa się z nieskończonej liczby rejestrów, mogących przechowywać dowolnie duże <em>liczby	całkowite</em>.<br>
+	    Rejestr o numerze zero nazywa się <strong>sumatorem</strong> lub <strong>akumulatorem</strong> i jest domyślnym argumentem dla większości instrukcji.</dd>
+
+	<dt><strong class="name">Taśma wejściowa</strong></dt>
+	<dd>Z taśmy wejściowej można wyłącznie <em>odczytywać dane</em>. Ma ona nieskończoną długość, dostęp do niej jest sekwencyjny: odczytywane są kolejne elementy, nie ma możliwości jej przewijania.</dd>
+
+	<dt><strong class="name">Taśma wyjściowa</strong></dt>
+	<dd>Na taśmę wyjściową można wyłącznie <em>zapisywać dane</em>. Ma ona nieskończoną długość, dostęp do niej jest sekwencyjny: zapisywane są kolejne elementy, nie ma możliwości jej przewijania.</dd>
+</dl>
+
+<p>Ponieważ komputer, na którym działa emulator, ma ograniczenia fizyczne, więc i model maszyny RAM musiał się im poddać. Pojemność rejestrów jest limitowana przez implementację JavaScript, ich liczba została ustalona na 1024, co wydaje się rozsądną liczbą. Pojemność taśm jest ograniczona przez zasoby systemowe. <a href="python.html">Wersja konsolowa</a> jest pozbawiona tych ograniczeń.
+</div>
+
+<a name="a2"></a>
+<h1>Zestaw instrukcji</h1>
+
+<div class="para">
+
+<p>Maszyna RAM interpretuje 12 instrukcji, dla większości z nich sumator jest domyślnym argumentem.
+
+<div align="center" style="margin-top: 1em; margin-bottom: 1em">
+<table cellspacing="0">
+
+<colgroup>
+<col style="vertical-align: top; font-weight: bold">
+<col style="text-align: right; color: blue">
+<col style="font-style: italic">
+</colgroup>
+
+<tbody>
+
+	<tr>
+		<td class="rb" rowspan="3">1
+		<td class="n">load
+		<td class="r">=i
+		<td class="n">r<sub>0</sub>
+		<td class="r">:= i
+	<tr>
+		<td class="n">load
+		<td class="r">p
+		<td class="n">r<sub>0</sub>
+		<td class="r">:= r<sub>P</sub>
+	<tr>
+		<td class="b">load
+		<td class="rb">*p
+		<td class="b">r<sub>0</sub>
+		<td class="rb">:= r[r<sub>P</sub>]
+
+	<tr>
+		<td class="rb" rowspan="2">2
+		<td class="n">store
+		<td class="r">p
+		<td class="n">r<sub>P</sub>
+		<td class="r">:= r<sub>0</sub>
+	<tr>
+		<td class="b">store
+		<td class="rb">*p
+		<td class="b">r[r<sub>P</sub>]
+		<td class="rb">:= r<sub>0</sub>
+
+	<tr>
+		<td class="rb" rowspan="3">3
+		<td class="n">add
+		<td class="r">=i
+		<td class="n">r<sub>0</sub>
+		<td class="r">:= r<sub>0</sub> + i
+	<tr>
+		<td class="n">add
+		<td class="r">p
+		<td class="n">r<sub>0</sub>
+		<td class="r">:= r<sub>0</sub> + r<sub>P</sub>
+	<tr>
+		<td class="b">add
+		<td class="rb">*p
+		<td class="b">r<sub>0</sub>
+		<td class="rb">:= r<sub>0</sub> + r[r<sub>P</sub>]
+
+	<tr>
+		<td class="rb" rowspan="3">4
+		<td class="n">sub
+		<td class="r">=i
+		<td class="n">r<sub>0</sub>
+		<td class="r">:= r<sub>0</sub> - i
+	<tr>
+		<td class="n">sub
+		<td class="r">p
+		<td class="n">r<sub>0</sub>
+		<td class="r">:= r<sub>0</sub> - r<sub>P</sub>
+	<tr>
+		<td class="b">sub
+		<td class="rb">*p
+		<td class="b">r<sub>0</sub>
+		<td class="rb">:= r<sub>0</sub> - r[r<sub>P</sub>]
+
+	<tr>
+		<td class="rb" rowspan="3">5
+		<td class="n">mult
+		<td class="r">=i
+		<td class="n">r<sub>0</sub>
+		<td class="r">:= r<sub>0</sub> * i
+	<tr>
+		<td class="n">mult
+		<td class="r">p
+		<td class="n">r<sub>0</sub>
+		<td class="r">:= r<sub>0</sub> * r<sub>P</sub>
+	<tr>
+		<td class="b">mult
+		<td class="rb">*p
+		<td class="b">r<sub>0</sub>
+		<td class="rb">:= r<sub>0</sub> * r[r<sub>P</sub>]
+
+	<tr>
+		<td class="rb" rowspan="3">6
+		<td class="n">div
+		<td class="r">=i
+		<td class="n">r<sub>0</sub>
+		<td class="r">:= <i>floor</i>(r<sub>0</sub> / i)
+	<tr>
+		<td class="n">div
+		<td class="r">p
+		<td class="n">r<sub>0</sub>
+		<td class="r">:= <i>floor</i>(r<sub>0</sub> / r<sub>P</sub>)
+	<tr>
+		<td class="b">div
+		<td class="rb">*p
+		<td class="b">r<sub>0</sub>
+		<td class="rb">:= <i>floor</i>(r<sub>0</sub> / r[r<sub>P</sub>])
+
+	<tr>
+		<td class="rb" rowspan="2">7
+		<td class="n">read
+		<td class="r">p
+		<td class="n">r<sub>P</sub>
+		<td class="r">:= wartość z taśmy wejściowej
+	<tr>
+		<td class="b">read
+		<td class="rb">*p
+		<td class="b">r[r<sub>P</sub>]
+		<td class="rb">:= wartość z taśmy wejściowej
+
+	<tr>
+		<td class="rb" rowspan="3">8
+		<td class="n">write
+		<td class="r">=i
+		<td class="r" colspan="2">zapisz na taśmę wyjściową i
+	<tr>
+		<td class="n">write
+		<td class="r">p
+		<td class="r" colspan="2">zapisz na taśmę wyjściową r<sub>P</sub>
+	<tr>
+		<td class="b">write
+		<td class="rb">*p
+		<td class="rb" colspan="2">zapisz na taśmę wyjściową r[r<sub>P</sub>]
+
+	<tr>
+		<td class="rb" rowspan="1">9
+		<td class="b">jump
+		<td class="rb">etykieta
+		<td class="rb" colspan="2">skocz do etykiety
+	<tr>
+		<td class="rb" rowspan="1">10
+		<td class="b">jzero
+		<td class="rb">etykieta
+		<td class="rb" colspan="2">skocz do etykiety gdy r<sub>0</sub> = 0
+	<tr>
+		<td class="rb" rowspan="1">11
+		<td class="b">jgtz
+		<td class="rb">etykieta
+		<td class="rb" colspan="2">skocz do etykiety gdy r<sub>0</sub> &gt; 0
+
+	<tr>
+		<td class="rb" rowspan="1">12
+		<td class="b">halt
+		<td class="rb">&nbsp;
+		<td class="rb" colspan="2">zatrzymaj program
+</tbody>
+</table>
+<a href="table.txt" title="Tabelka dla przeglądarek tekstowych">Tabelka dla dla przeglądarek tekstowych</a>
+</div>
+</div>
+
+<a name="a3"></a>
+<h1>Składnia programu</h1>
+
+<div class="para">
+
+<p>Uwagi wstępne:
+<ul>
+	<li>wielkość liter nie ma znaczenia, więc <code>LOAD 1</code> to to samo, co <code>load 1</code>, <code>Load 1</code> itd.;
+	<li>puste linie są ignorowane;
+	<li>komentarz zaczyna się znakiem # (ang. hash) i rozciąga do końca linii.
+</ul>
+
+<p>Pojedyncza linia programu składa się z następujących elementów:
+
+<pre class="code">
+numer_linii etykieta: instrukcja operand # komentarz
+</pre>
+
+<dl>
+
+<dt><strong class="i">Numer linii</strong> (element opcjonalny, regexp: <kbd>[0-9]+</kbd>)</dt> 
+<dd>
+Liczba całkowita, dodatnia bez znaku. Pełni rolę informacyjną dla piszącego program, jej wartość jest ignorowana przez kompilator.<br>
+Linię, w której występuje wyłącznie numer linii, uznaje się za pustą.</dd>
+
+<dt><strong class="i">Etykieta</strong> (element opcjonalny, regexp: <kbd>[a-zA-Z_][a-zA-Z0-9_]*:</kbd>)</dt>
+<dd>
+Jest nazwą definiującą punkt w programie, do którego może zostać przekazane sterowanie przez instrukcję skoku (<code>jump</code>, <code>jzero</code>, <code>jgtz</code>). <strong>Nazwy etykiet nie mogą się powtarzać.</strong><br>
+W poniższym przykładzie zostaną wykonane wyłącznie dwie instrukcje oznaczone znakiem <b>X</b>.
+
+<pre class="code">
+	jump etykieta2 # X
+
+	# pomijany kod
+
+etykieta1:
+
+	# pomijany kod
+
+etykieta2:
+	halt           # X
+</pre>
+</dd>
+
+<dt><strong class="i">Instrukcja</strong> (element wymagany!)</dt>
+<dd>
+Jest jedną z nazw instrukcji z powyższej tabelki, autor wprowadził jednak pewien wyjątek odnośnie obowiązkowego występowanie tego elementu. <br>
+Teoretycznie poniższa konstrukcja jest błędna:
+
+<pre class="code">
+1 etykieta: # brak instrukcji
+2	load 1
+3	...
+</pre>
+
+ale kompilator ją dopuszcza. Automatycznie wstawia instrukcję NOP (ang. <b>N</b>o <b>OP</b>eration), czyli nie-rób-nic - precyzyjniej rzecz ujmując, instrukcja NOP zwiększa wskaźnik instrukcji, ale nie wpływa na stan pamięci ani taśm wejściowej i wyjściowej. Dzięki temu zabiegowi kilka etykiet może wskazywać na ten sam fragment kodu.<br>
+<br>
+Emulator ma własną, wbudowaną instrukcję NOP, jednak w kodzie maszyny RAM występują konstrukcje o takich cechach; oto ich lista:
+
+<pre class="code">
+	load  0
+	store 0
+	div   =1
+	mult  =1
+	add   =0
+	sub   =0
+</pre>
+</dd>
+
+<dt><strong class="i">Operand</strong> (wymagany przez wszystkie rozkazy, za wyjątkiem <code>halt</code>)</dt>
+<dd>
+W przypadku rozkazów skoku operand - adres docelowy - jest nazwą etykiety <strong>bez kończącego dwukropka</strong> (regexp: <kbd>[a-zA-Z_][a-zA-Z0-9_]*</kbd>).<br>
+<br>
+Dla pozostałych rozkazów zdefiniowano trzy tryby adresowania:
+
+<dl>
+	<dt><strong class="name">Natychmiastowe (<i>=i</i>)</strong></dt>
+	<dd>Wartość argumentu <i>i</i> (liczba całkowita ze znakiem; regexp <kbd>[+-]?[0-9]+</kbd>) jest zapisana bezpośrednio w kodzie rozkazu.</dd>
+
+	<dt><strong class="name">Bezpośrednie (<i>p</i>)</strong></dt>
+	<dd>Wartość argumentu <i>p</i> (liczba całkowita, dodatnia, bez znaku; regexp <kbd>[0-9]+</kbd>) jest numerem rejestru, którego zawartość ma zostać pobrana/zapisana.</dd>
+
+	<dt><strong class="name">Pośrednie (<i>*p</i>)</strong></dt>
+	<dd>Wartość argumentu <i>p</i> (liczba całkowita, dodatnia, bez znaku; regexp <kbd>[0-9]+</kbd>) jest numerem rejestru, którego zawartość jest traktowana jako numer rejestru, którego zawartość ma zostać pobrana/zapisana.</dd>
+</dl>
+
+Poniżej przykłady adresowania:
+
+<pre class="code">
+# r0 = 0, r1 = 333, r2 = 222, r3 = 2
+
+	load =777  # r0 = 777                 natychmiastowe
+	load  1    # r0 = r1 = 333            bezpośrednie
+	load *3    # r0 = r[r3] = r[2] = 222  pośrednie
+</pre>
+</dd>
+</dl>
+</div>
+
+<hr>
+
+</body>
+</html>
+
