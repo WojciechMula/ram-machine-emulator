@@ -39,14 +39,12 @@ function emulator_enable(enable)
  document._machine.display.disabled = !enable;
 }
 
+
 function emulator_init()
 {
  __vm_IP      = 0;
  __vm_running = 1;
-
- var i
- for (i=0; i<registers.length; i++)
- 	registers[i] = 0x00000000;
+ registers = new Registers();
 
  document._machine.display.value = "";
 }
@@ -55,9 +53,7 @@ function emulator_reset_machine()
 {
  __vm_running = 1;
 
- var i
- for (i=0; i<registers.length; i++)
- 	registers[i] = 0x00000000;
+ registers = new Registers();
  __vm_set_IP(0);
 }
 
@@ -87,10 +83,6 @@ function execute_instruction()
 
 //**** funkcje lokalne *****************************************************
 /*
- function __vm_check_regindex(regnumber)
- -- sprawdza czy 'regnumber' jest numerem *fizycznego rejestru*;
-    jeœli jest zwraca 'regnumber', jeœli nie zg³asza b³¹d
-
  function __vm_get_physicalreg(regnumber)
  -- zwraca wartoœæ *fizycznego* rejestru o numerze 'regnumber'
 
@@ -151,20 +143,19 @@ function __vm_set_IP(new_IP)
  watch_update_view();
 }
 
-function __vm_check_regindex(regnumber)
-{
- if (regnumber < 0)
- 	 error("B³¹d wykonywania: numer rejestru nie mo¿e byæ ujemny (" + regnumber + ").");
- if (regnumber >= register_count)
- 	 error("B³¹d wykonywania: dostêpnych jest " + register_count + " rejestrów. Odwo³anie do rejestru " + regnumber + " niemo¿liwe do wykonania.");
- return regnumber;
+function __vm_get_physicalreg(regnumber) {
+	if (regnumber < 0)
+		error("B³¹d wykonywania: numer rejestru nie mo¿e byæ ujemny (" + regnumber + ").");
+	else
+		return registers.get(regnumber);
 }
 
-function __vm_get_physicalreg(regnumber)
-{ return registers[__vm_check_regindex(regnumber)]; }
-
-function __vm_set_physicalreg(regnumber, value)
-{ registers[__vm_check_regindex(regnumber)] = value; }
+function __vm_set_physicalreg(regnumber, value) {
+	if (regnumber < 0)
+		error("B³¹d wykonywania: numer rejestru nie mo¿e byæ ujemny (" + regnumber + ").");
+	else
+		registers.set(regnumber, value);
+}
 
 function __vm_get_content(addressing, x)
 {

@@ -105,10 +105,10 @@ function watch_userprompt()
  	 	 lo = parseInt(lo);
  	 	 hi = parseInt(hi);
 
- 	 	 if ((lo < 0) || (lo > register_count))
- 	 	 	continue; // przekroczenie zakresu
- 	 	 if ((hi < 0) || (hi > register_count))
- 	 	 	continue; // przekroczenie zakresu
+ 	 	 if (lo < 0)
+	 	 	continue; // przekroczenie zakresu
+ 	 	 if (hi < 0)
+	 	 	continue; // przekroczenie zakresu
  	 	 if (lo > hi)
  	 	 	continue; // z³a relacja algebraiczna
 
@@ -121,7 +121,7 @@ function watch_userprompt()
  	 	 	continue; // nie-liczba
 
  	 	 number = parseInt(number);
- 	 	 if ((number < 0) || (number > register_count))
+ 	 	 if (number < 0) 
  	 	 	continue; // przekroczenie zakresu
 
  	 	 __watch_list = __watch_list.concat([ [number, name] ]);
@@ -156,7 +156,7 @@ function watchlist2string()
  	 	 else
  	 	 	 string = string + " r" + __watch_list[i][0];
 
- 	 	 string = string + "=" + registers[__watch_list[i][0]];
+ 	 	 string = string + "=" + registers.get(__watch_list[i][0]);
  	 	}
  	 else // tablica
  	 	{
