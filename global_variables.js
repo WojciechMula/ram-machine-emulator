@@ -18,7 +18,7 @@ var registers;
 function Registers() {
 	
 	function get(num) {
-		var reg = "r" + num
+		var reg = "r" + num;
 		if (typeof(this[reg]) == 'undefined')
 			this[reg] = 0x00;
 		return this[reg];
@@ -36,8 +36,6 @@ function Registers() {
 		for (i=a; i < b; i++) {
 			result.push( this.get(i) );
 		}
-
-		alert(result);
 		return result;
 	}
 
