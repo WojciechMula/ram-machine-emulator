@@ -7,7 +7,7 @@
 
 import sys, emulator
 from compiler import compile_code
-from emulator import execute, dump_registers, in_tape, out_tape
+from emulator import execute, dump_registers, in_tape, out_tape, Halt
 
 def main():
 	filename = ""
@@ -48,6 +48,9 @@ def main():
 			execute[instruction](argument)
 			print dump_registers()
 		
+	except Halt:
+		#print "halt"
+		pass
 	except Exception, e:
 		print e
 		return

@@ -12,6 +12,11 @@ registers= {0: 0l}  # registers
 in_tape  = []       # input tape
 out_tape = []       # output tape
 
+
+class Halt:
+	pass
+
+
 def dump_registers():
 	s = ""
 	for i in registers.keys():
@@ -144,8 +149,7 @@ def i_jgtz(arg):
 		IP += 1
 
 def i_halt(arg):
-	global IP
-	IP += 1
+	raise Halt
 
 
 execute = { \
